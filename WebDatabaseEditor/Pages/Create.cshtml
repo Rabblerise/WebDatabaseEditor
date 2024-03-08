@@ -1,0 +1,141 @@
+﻿@page "/Create"
+@model WebDatabaseEditor.Pages.CreateModel
+@{
+    ViewData["Title"] = "Create page";
+}
+
+<div class="container mt-4">
+    <form method="post">
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <label for="TableName">Имя таблицы:</label>
+                <input type="text" id="TableName" class="form-control" asp-for="TableName" />
+            </div>
+            <div class="col-md-3">
+                <button type="button" onclick="addRow()" class="btn btn-primary">Добавить строку</button>
+            </div>
+            <div class="col-md-3">
+                <button type="button" onclick="addColumn()" class="btn btn-primary">Добавить столбец</button>
+            </div>
+
+            <label for="SelectedRole">Права доступа:</label>
+            <select id="SelectedRole" class="form-control" asp-for="SelectedRole" asp-items="Model.Roles">
+                <option value="">Выберите роль</option>
+            </select>
+        </div>
+
+        <table id="editableTable" class="table table-bordered">
+            <thead>
+                <tr>
+                    <!-- Заголовки столбцов таблицы, если необходимо -->
+                    <td>ID</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable="true">Новая ячейка</td>
+                    <!-- ... другие ячейки по умолчанию ... -->
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <button type="button" onclick="createTable()" class="btn btn-success">Создать таблицу</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadRoles();
+        });
+
+        function loadRoles() {
+            var rolesSelect = document.getElementById("SelectedRole");
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "/Create/OnGetRoles", true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var roles = JSON.parse(xhr.responseText);
+
+                    roles.forEach(function (role) {
+                        var option = document.createElement("option");
+                        option.value = role;
+                        option.text = role;
+                        rolesSelect.add(option);
+                    });
+                }
+            };
+
+            xhr.send();
+        }
+
+        function addRow() {
+            var table = document.getElementById("editableTable").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.rows.length);
+
+            for (var i = 0; i < table.rows[0].cells.length; i++) {
+                var cell = newRow.insertCell(i);
+                cell.innerHTML = "Новая ячейка";
+                makeCellEditable(cell);
+            }
+        }
+
+        function addColumn() {
+            var table = document.getElementById("editableTable");
+            for (var i = 0; i < table.rows.length; i++) {
+                var newRowCell = table.rows[i].insertCell(table.rows[i].cells.length);
+                newRowCell.innerHTML = "Новая ячейка";
+                makeCellEditable(newRowCell);
+            }
+        }
+
+        function createTable() {
+            var tableName = document.getElementById("TableName").value;
+            if (!tableName) {
+                alert("Введите имя таблицы!");
+                return;
+            }
+
+            // Сбор данных из таблицы
+            var table = document.getElementById("editableTable");
+            var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            var columns = [];
+
+            for (var i = 0; i < rows[0].cells.length; i++) {
+                columns.push(rows[0].cells[i].textContent);
+            }
+
+            // Отправка данных на сервер
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Create/OnPostCreate", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert("Таблица '" + tableName + "' создана!");
+                }
+            };
+
+            var data = {
+                TableName: tableName,
+                ColumnTable: columns,
+                SelectedRole: document.getElementById("SelectedRole").value
+            };
+
+            xhr.send(JSON.stringify(data));
+        }
+
+        function makeCellEditable(cell) {
+            cell.contentEditable = true;
+            cell.addEventListener('blur', function () {
+                cell.contentEditable = false;
+            });
+        }
+    </script>
+}

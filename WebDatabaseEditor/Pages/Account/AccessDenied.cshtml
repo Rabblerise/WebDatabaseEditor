@@ -1,0 +1,14 @@
+﻿@page "/Account/AccessDenied"
+@model WebDatabaseEditor.Pages.Account.AccessDeniedModel
+@{
+    ViewData["Title"] = "AccessDenied";
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>Добро пожаловать, @User.Identity.Name!</p>
+    }
+    else
+    {
+        <p>Пожалуйста, <a href="/Account/Login">войдите</a> в систему.</p>
+    }
+}
