@@ -1,0 +1,43 @@
+﻿@page "/Account/Manage"
+@model WebDatabaseEditor.Pages.Account.ManageUsersModel
+@{
+}
+<div class="container mt-4">
+    <h2>Manage Users</h2>
+
+    <a asp-page="/Account/Register" class="btn btn-primary btn-sm">Register</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Users != null && Model.Users.Any())
+            {
+                @foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td>@user.UserName</td>
+                        <td>@user.Email</td>
+                        <td>@string.Join(", ", await Model.GetRolesAsync(user))</td>
+                        <td style="display: flex; align-items: center;">
+                            <a asp-page="/Account/Edit" asp-route-userId="@user.Id" class="btn btn-primary btn-sm">Edit</a>
+                            <form class="ms-3" method="post" asp-page-handler="Delete" asp-route-id="@user.Id" onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <p>No items to display.</p>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,34 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using WebDatabaseEditor.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@{
+    var logoutModel = new WebDatabaseEditor.Pages.Account.LogoutModel(SignInManager);
+}
+
+<form method="post" asp-page="/Account/Logout" class="ms-3" asp-antiforgery="true">
+    <button id="logoutButton" class="btn btn-outline-primary">Logout</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    document.getElementById('logoutButton').addEventListener('click', async function () {
+        try {
+            const response = await fetch('/Account/Logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.getElementsByName("__RequestVerificationToken")[0].value,
+                },
+            });
+
+            if (response.ok) {
+                console.log('Logout successful');
+                // Добавьте дополнительный код, который вы хотите выполнить после успешного выхода
+            } else {
+                console.error('Logout failed:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
+    });
+</script>

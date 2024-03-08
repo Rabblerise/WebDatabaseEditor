@@ -1,0 +1,73 @@
+﻿@page "/Account/Register"
+@model WebDatabaseEditor.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container mt-5">
+    <form method="post" class="needs-validation">
+        <div class="mb-3">
+            <label asp-for="Input.Email" class="form-label"></label>
+            <input asp-for="Input.Email" class="form-control" required />
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.Email"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Login" class="form-label"></label>
+            <input asp-for="Input.Login" class="form-control" required />
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.Login"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Password" class="form-label"></label>
+            <input asp-for="Input.Password" type="password" class="form-control" required />
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.Password"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+            <input asp-for="Input.ConfirmPassword" type="password" class="form-control" required />
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.ConfirmPassword"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Input.Role" class="form-label"></label>
+            <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select">
+            </select>
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.Role"></span>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                <input asp-for="Input.RememberMe" class="form-check-input" type="checkbox" />
+                <label class="form-check-label" asp-for="Input.RememberMe">Remember me</label>
+            </div>
+            <div class="invalid-feedback">
+                <span asp-validation-for="Input.RememberMe"></span>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+
+    <section>
+        <div asp-validation-summary="ModelOnly" class="text-danger mt-3"></div>
+    </section>
+</div>
+
+@section scripts {
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+}

@@ -1,0 +1,25 @@
+﻿@page "/Account/Edit"
+@model WebDatabaseEditor.Pages.Account.EditUserModel
+@{
+}
+<h2>Edit User</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="User.UserName" class="form-label"></label>
+        <input asp-for="User.UserName" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="User.Email" class="form-label"></label>
+        <input asp-for="User.Email" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SelectedRole" class="form-label"></label>
+        <select asp-for="SelectedRole" asp-items="Model.Roles" class="form-select">
+        </select>
+    </div>
+    <input type="hidden" asp-for="User.Id" />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

@@ -1,0 +1,112 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using WebDatabaseEditor.Models;
+
+namespace WebDatabaseEditor.Pages.Account
+{
+    public class RegisterModel : PageModel
+    {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        public List<SelectListItem> Roles { get; set; }
+
+        public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+        }
+
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public class InputModel
+        {
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "Login")]
+            public string Login { get; set; }
+
+            [Required]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
+
+            [Display(Name = "Remember me")]
+            public bool RememberMe { get; set; }
+
+            [Display(Name = "Role")]
+            public string Role { get; set; }
+        }
+
+        public async Task<IActionResult> OnGet()
+        {
+            Roles = _roleManager.Roles.Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = Input.Login, Email = Input.Email };
+
+                var emailExists = await _userManager.FindByEmailAsync(Input.Email);
+                var userNameExists = await _userManager.FindByNameAsync(Input.Login);
+
+                if (emailExists != null || userNameExists != null)
+                {
+                    ModelState.AddModelError(string.Empty, "Email or Login is already taken.");
+                    Console.WriteLine($"EmailExists: {emailExists != null}");
+                    Console.WriteLine($"UserNameExists: {userNameExists != null}");
+                    return Page();
+                }
+
+                var result = await _userManager.CreateAsync(user, Input.Password);
+
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(Input.Role) && await _roleManager.RoleExistsAsync(Input.Role))
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+
+                    await _signInManager.SignInAsync(user, isPersistent: Input.RememberMe);
+                    return RedirectToPage("/Index");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"Invalid model");
+                foreach (var modelError in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"ModelError: {modelError.ErrorMessage}");
+                }
+            }
+            return Page();
+        }
+    }
+}
