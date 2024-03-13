@@ -29,6 +29,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
+    // By default, all incoming requests will be authorized according to the default policy.
     options.FallbackPolicy = options.DefaultPolicy;
 });
 builder.Services.AddLogging(loggingBuilder =>
@@ -44,7 +45,7 @@ builder.Services.AddMvc().AddRazorPagesOptions(options =>
 
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
     options.EnableSensitiveDataLogging();
@@ -72,6 +73,7 @@ builder.Services.AddScoped<DatabaseService>();
 builder.Services.AddScoped<AdminSetup>();
 builder.Services.AddScoped<ApplicationSignInManager>();
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 

@@ -25,7 +25,7 @@
                         
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item">
+                        <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/Account/ManageUsers">Manage User</a>
                             </li>
                         }
@@ -35,7 +35,7 @@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <p class="nav navbar-text">Hello, @User.Identity?.Name!</p>
+                    <p class="nav navbar-text">Hello, @User.Identity?.Name!</p>
                         <div>
                             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm">
                                 <button type="submit" class="btn btn-link navbar-btn btn-outline-primary ms-2">Logout</button>

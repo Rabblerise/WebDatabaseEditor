@@ -54,6 +54,8 @@ namespace WebDatabaseEditor.Pages.Account
 
             [Display(Name = "Role")]
             public string Role { get; set; }
+
+            public List<SelectListItem> Roles { get; set; }
         }
 
         public async Task<IActionResult> OnGet()

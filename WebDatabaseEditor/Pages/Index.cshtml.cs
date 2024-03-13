@@ -45,7 +45,7 @@ namespace WebDatabaseEditor.Pages
                 }
             }
             catch (Exception ex)
-            {
+        {
                 Console.WriteLine($"Error while retrieving data: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
 
@@ -59,7 +59,7 @@ namespace WebDatabaseEditor.Pages
         {
             var itemToDelete = _context.CustomTables.Find(id);
             if (itemToDelete == null)
-            {
+        {
                 return NotFound();
             }
 

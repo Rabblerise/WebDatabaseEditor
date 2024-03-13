@@ -89,8 +89,8 @@ namespace WebDatabaseEditor.Pages
 
                 await _context.Database.ExecuteSqlAsync($"INSERT INTO CustomTables (TableName, Columns, SelectedRole) values ({model.TableName}, {string.Join(", ", Headers)}, {model.SelectedRole})");
 
-                return RedirectToPage("/Index");
-            }
+            return RedirectToPage("/Index");
+        }
             catch (Exception ex)
             {
                 return BadRequest(new { message = $"Ошибка при создании таблицы: {ex.Message}" });

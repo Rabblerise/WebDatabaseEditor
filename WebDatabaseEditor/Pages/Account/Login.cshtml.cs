@@ -31,9 +31,6 @@ public class LoginModel : PageModel
     public class InputModel
     {
         [Required]
-        [DataType(DataType.Text)]
-        [Display(Name = "UserName")]
-        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -48,7 +45,6 @@ public class LoginModel : PageModel
     {
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
