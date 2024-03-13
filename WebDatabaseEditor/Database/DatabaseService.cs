@@ -11,7 +11,7 @@ namespace WebDatabaseEditor.Database
         {
             _context = context;
         }
-        public void CreateCustomTable(string tableName, List<string> columnNames, string selectedRole) {
+        public void CreateCustomTable(string tableName, string columnNames, string selectedRole) {
             string creataTableQuery = $"CREATE TABLE {tableName} ({string.Join(",", columnNames.Select(c => $"{c} NVARCHAR(255)"))})";
             _context.Database.ExecuteSqlRaw(creataTableQuery);
 

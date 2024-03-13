@@ -31,6 +31,9 @@ public class LoginModel : PageModel
     public class InputModel
     {
         [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -45,27 +48,38 @@ public class LoginModel : PageModel
     {
         if (ModelState.IsValid)
         {
-            if (result.Succeeded)
+            ApplicationUser? signedUser = await _userManager.FindByEmailAsync(_userManager.NormalizeEmail(Input.Email));
+            if (signedUser != null)
             {
-                _logger.LogInformation("User logged in.");
-                return RedirectToPage("/Index");
-            }
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToPage("/LoginWith2fa", new { ReturnUrl = "/Index", RememberMe = Input.RememberMe });
-            }
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User account locked out.");
-                return RedirectToPage("/Lockout");
+                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                Console.WriteLine($"Email: {Input.Email}\nPassword: {Input.Password}\nRememberMe:{Input.RememberMe} ");
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("User logged in.");
+                    return RedirectToPage("/Index");
+                }
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToPage("/LoginWith2fa", new { ReturnUrl = "/Index", RememberMe = Input.RememberMe });
+                }
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning("User account locked out.");
+                    return RedirectToPage("/Lockout");
+                }
+                else
+                {
+                    _logger.LogError($"Login failed. Details: {result}");
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ViewData["InvalidLoginAttempt"] = "Invalid login attempt. Please check your email and password.";
+                    return Page();
+                }
             }
             else
             {
-                _logger.LogError($"Login failed. Details: {result}");
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                ViewData["InvalidLoginAttempt"] = "Invalid login attempt. Please check your email and password.";
-                return Page();
+                _logger.LogWarning("User account not found.");
             }
+
         }
 
         return Page();

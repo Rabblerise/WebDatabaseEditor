@@ -10,8 +10,8 @@
     <form asp-page="./Login" method="post">
         <div class="mb-3">
             <label for="Input_UserName" class="form-label">Username</label>
-            <input asp-for="Input.UserName" id="Input_UserName" class="form-control" type="text" />
-            <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            <input asp-for="Input.Email" id="Input_UserName" class="form-control" />
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <label for="Input_Password" class="form-label">Password</label>
