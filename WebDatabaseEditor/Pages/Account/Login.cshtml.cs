@@ -31,9 +31,8 @@ public class LoginModel : PageModel
     public class InputModel
     {
         [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "UserName")]
+        public string UserName { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
@@ -48,11 +47,11 @@ public class LoginModel : PageModel
     {
         if (ModelState.IsValid)
         {
-            ApplicationUser? signedUser = await _userManager.FindByEmailAsync(_userManager.NormalizeEmail(Input.Email));
+            ApplicationUser? signedUser = await _userManager.FindByNameAsync(Input.UserName);
             if (signedUser != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
-                Console.WriteLine($"Email: {Input.Email}\nPassword: {Input.Password}\nRememberMe:{Input.RememberMe} ");
+                var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: true);
+                Console.WriteLine($"Email: {Input.UserName}\nPassword: {Input.Password}\nRememberMe:{Input.RememberMe} ");
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");

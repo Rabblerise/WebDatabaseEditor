@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,7 +15,6 @@ namespace WebDatabaseEditor.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        public List<SelectListItem> Roles { get; set; }
 
         public RegisterModel(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager)
         {
@@ -28,6 +26,7 @@ namespace WebDatabaseEditor.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; }
 
+        public List<SelectListItem> Roles { get; set; }
         public class InputModel
         {
             [Required]
@@ -54,8 +53,6 @@ namespace WebDatabaseEditor.Pages.Account
 
             [Display(Name = "Role")]
             public string Role { get; set; }
-
-            public List<SelectListItem> Roles { get; set; }
         }
 
         public async Task<IActionResult> OnGet()
@@ -67,6 +64,7 @@ namespace WebDatabaseEditor.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Console.WriteLine(Input.Role);
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Login, Email = Input.Email };
@@ -108,6 +106,8 @@ namespace WebDatabaseEditor.Pages.Account
                     Console.WriteLine($"ModelError: {modelError.ErrorMessage}");
                 }
             }
+
+            Roles = _roleManager.Roles.Select(r => new SelectListItem { Value = r.Name, Text = r.Name }).ToList();
             return Page();
         }
     }

@@ -7,7 +7,7 @@
 <h2>@ViewData["Title"]</h2>
 
 <div class="container mt-5">
-    <form method="post" class="needs-validation">
+    <form method="post" class="needs-validation" novalidate>
         <div class="mb-3">
             <label asp-for="Input.Email" class="form-label"></label>
             <input asp-for="Input.Email" class="form-control" required />
@@ -42,7 +42,7 @@
 
         <div class="mb-3">
             <label asp-for="Input.Role" class="form-label"></label>
-            <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select">
+            <select asp-for="Input.Role" asp-items="Model.Roles" class="form-select" >
             </select>
             <div class="invalid-feedback">
                 <span asp-validation-for="Input.Role"></span>
