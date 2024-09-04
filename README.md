@@ -1,4 +1,4 @@
-![изображение](https://github.com/user-attachments/assets/2ea6e255-1186-4d70-b80c-3fe0bad14faf)# WebDatabaseEditor - A Web-Based Database Management System
+# WebDatabaseEditor - A Web-Based Database Management System
 
 ## Description
 
